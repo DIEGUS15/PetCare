@@ -91,6 +91,25 @@ export const logout = (req, res) => {
   return res.sendStatus(200);
 };
 
+export const profile = async (req, res) => {
+  const userFound = await User.findById(req.user.id);
+
+  if (!userFound) return res.status(404).json({ message: "User nor found" });
+
+  return res.json({
+    id: userFound.id,
+    fullname: userFound.fullname,
+    telephone: userFound.telephone,
+    address: userFound.address,
+    role: userFound.role,
+    state: userFound.state,
+    email: userFound.email,
+    pets: userFound.pets,
+    createdAt: userFound.createdAt,
+    updatedAt: userFound.updatedAt,
+  });
+};
+
 //Ruta para verificar que el usuario siga autenticado en la página
 export const verifyToken = async (req, res) => {
   const { token } = req.cookies;

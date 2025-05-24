@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { loginRequest, verifyTokenRequest } from "../api/auth";
+import { loginRequest, verifyTokenRequest, getProfile } from "../api/auth";
 import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState({});
 
   const signin = async (user) => {
     try {
@@ -24,6 +25,8 @@ export const AuthProvider = ({ children }) => {
       console.log(res);
       setIsAuthenticated(true);
       setUser(res.data);
+
+      await getProfileInfo();
     } catch (error) {
       if (Array.isArray(error.response.data)) {
         return setErrors(error.response.data);
@@ -36,6 +39,22 @@ export const AuthProvider = ({ children }) => {
     Cookies.remove("token");
     setIsAuthenticated(false);
     setUser(null);
+  };
+
+  const getProfileInfo = async () => {
+    try {
+      setLoading(true);
+      const res = await getProfile();
+      setProfile(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.log("Error fetching profile information: ", error);
+      setLoading(false);
+      setErrors(
+        error.message?.data ||
+          (error.message ? [error.message] : ["An unexpected error ocurred"])
+      );
+    }
   };
 
   //Limpia automaticamente los errores después de 5 segundos
@@ -67,7 +86,7 @@ export const AuthProvider = ({ children }) => {
         }
         setIsAuthenticated(true);
         setUser(res.data);
-        // await getProfileinformation();
+        await getProfileInfo();
         setLoading(false);
       } catch (error) {
         setIsAuthenticated(false);
@@ -86,8 +105,10 @@ export const AuthProvider = ({ children }) => {
         loading,
         user,
         isAuthenticated,
+        profile,
         setIsAuthenticated,
         setUser,
+        getProfileInfo,
         errors,
       }}
     >

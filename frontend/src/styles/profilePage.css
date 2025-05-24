@@ -1,0 +1,14 @@
+.profile-container {
+    margin: 10px;
+    overflow: hidden;
+    background-color: rgb(253, 246, 236);
+    color: rgb(93, 64, 55)
+}
+
+.info-user {
+    border: 2px solid rgb(244, 162, 97);
+    border-radius: 15px;
+    margin: 10px;
+    padding: 10px;
+    /* background-color: blue; */
+}

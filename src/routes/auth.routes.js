@@ -6,6 +6,8 @@ import {
   getUsers,
   deleteUser,
   updateUser,
+  profile,
+  verifyToken,
 } from "../controllers/auth.controller.js";
 import { authRequired } from "../middlewares/validateToken.js";
 import { validateSchema } from "../middlewares/validator.middleware.js";
@@ -26,5 +28,7 @@ router.post("/logout", logout);
 router.get("/user", authRequired, checkRole(["admin"]), getUsers);
 router.delete("/user/:id", authRequired, checkRole(["admin"]), deleteUser);
 router.put("/user/:id", authRequired, checkRole(["admin"]), updateUser);
+router.get("/user/profile", authRequired, profile);
+router.get("/verify", verifyToken);
 
 export default router;
